@@ -3,7 +3,6 @@ const User = require("../models/user");
 const { status } = require("../utils/status");
 const Transaction = require("../models/transaction");
 
-// create a new transaction using a session
 const createTransaction = async (req, res) => {
   const { fromUserId, toUserId, amount } = req.body;
   const session = await mongoose.startSession();
@@ -41,19 +40,19 @@ const createTransaction = async (req, res) => {
         amount,
         note: `Received from ${fromUser.name}`,
       },
-    ], { session , ordered: true });
+    ], { session: session , ordered: true });
 
     await session.commitTransaction();
     res.status(status.OK).json({ message: "Transaction successful" });
   } catch (error) {
     await session.abortTransaction();
     res.status(status.SERVER_ERROR).json({ error: error.message });
-  } finally {
+  } 
+  finally {
     session.endSession();
   }
 };
 
-// update a transaction note
 const updateTransaction = async (req, res) => {
   try {
     const { id } = req.params;
@@ -66,7 +65,6 @@ const updateTransaction = async (req, res) => {
   }
 };
 
-// get transactions for a user
 const getUserTransactions = async (req, res) => {
   try {
     const { userId } = req.params;
